@@ -50,7 +50,7 @@ const SignIn = () => {
             <form className='min-w-[400px] mx-auto text-white absolute z-50'
                 onSubmit={handleSubmit(onSubmit)}>
                 <div className='space-y-4'>
-                    <h2 className='text-3xl text-center'>Please Signup</h2>
+                    <h2 className='text-3xl text-center'>Please Signin</h2>
                     {/* Email */}
                     <div>
                         <label htmlFor="" className='block mb-2'>Email*</label>

@@ -14,7 +14,7 @@ const useAxiosSecure = () => {
             return response
         }, error => {
             console.log('interceptor caught error', error.response.status);
-            if (error.response.status === 401) {
+            if (error?.response?.status === 401) {
                 navigate('/signIn')
             }
             return Promise.reject(error)

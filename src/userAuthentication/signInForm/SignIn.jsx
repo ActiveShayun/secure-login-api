@@ -31,7 +31,7 @@ const SignIn = () => {
             }
             const res = await useAxios.post('/signin', userCredentials)
             console.log('SignUp status', res);
-            if (res?.status === 200 && res.data.success) {
+            if (res?.status === 200 && res?.data?.success) {
                 toast.success('Signin successful')
                 reset()
                 navigate('/profile')

@@ -3,13 +3,17 @@ import uploadImage from '../../../utility/utility';
 import toast from 'react-hot-toast';
 import { FiLoader } from "react-icons/fi";
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAxiosSecure from '../../useAxios/useAxiosSecure';
+import { FaEyeSlash } from 'react-icons/fa';
+import { IoEye } from 'react-icons/io5';
 
 
 const SignUp = () => {
     const useAxios = useAxiosSecure()
     const [loading, setLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+    const navigate = useNavigate()
 
     const {
         register,
@@ -35,20 +39,26 @@ const SignUp = () => {
             if (res?.status === 201) {
                 toast.success('SignUp successful')
                 reset()
+                navigate('/signIn')
             }
 
         } catch (error) {
             console.log(error);
+            if (error.status === 400) {
+                toast.error('user already exits')
+                reset()
+
+            }
         } finally {
             setLoading(false)
         }
-
-        console.log(data);
     }
-    console.log(errors);
+
+
     return (
-        <div className='max-w-[400px] mx-auto lg:mt-8 mt-4'>
-            <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="bg-[url('/signup-bg.jpg')] h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center relative text-white">
+            <form className=' min-w-[400px] mx-auto absolute z-50'
+                onSubmit={handleSubmit(onSubmit)}>
                 <div className='space-y-4'>
                     <h2 className='text-3xl text-center'>Please Signup</h2>
                     {/* Photo */}
@@ -57,7 +67,7 @@ const SignUp = () => {
                         <input
                             {...register('photo', { required: 'user photo is required' })}
                             type="file"
-                            className='border rounded-md px-4 py-2 w-full' />
+                            className='border rounded-md px-4 py-2 w-full text-white' />
                         {/* error handle */}
                         {errors?.photo &&
                             <p className='text-red-600'>{errors?.photo?.message}</p>}
@@ -78,7 +88,7 @@ const SignUp = () => {
                     <div>
                         <label htmlFor="" className='block mb-2'>Email*</label>
                         <input
-                            className='border rounded-md px-4 py-2 w-full'
+                            className='border rounded-md px-4 py-2 w-full text-white'
                             {...register('email', { required: 'user email is required' })}
                             type="email"
                             placeholder='Enter your email' />
@@ -89,11 +99,25 @@ const SignUp = () => {
                     {/* Password */}
                     <div>
                         <label htmlFor="" className='block mb-2'>Password*</label>
-                        <input
-                            className='border rounded-md px-4 py-2 w-full '
-                            {...register('password', { required: 'user password is required' })}
-                            type="text"
-                            placeholder='Enter your Password' />
+                        <div className='relative '>
+                            <input
+                                className='border rounded-md px-4 py-2 w-full text-white'
+                                {...register('password', { required: 'user password is required' })}
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder='Enter your Password' />
+                            <span className='absolute top-3 right-3 cursor-pointer'
+                                onClick={() => setShowPassword(!showPassword)}>
+                                {
+                                    showPassword ?
+                                        <span>
+                                            <FaEyeSlash />
+                                        </span> :
+                                        <span>
+                                            <IoEye />
+                                        </span>
+                                }
+                            </span>
+                        </div>
                         {/* error handle */}
                         {errors?.password &&
                             <p className='text-red-600'>{errors?.password?.message}</p>}
@@ -119,6 +143,7 @@ const SignUp = () => {
                     </div>
                 </div>
             </form>
+            <div className='absolute bg-black top-0 left-0 h-full w-full opacity-60'></div>
         </div>
     );
 };

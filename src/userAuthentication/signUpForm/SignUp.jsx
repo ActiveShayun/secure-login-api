@@ -1,13 +1,48 @@
 import { useForm } from 'react-hook-form';
+import uploadImage from '../../../utility/utility';
+import toast from 'react-hot-toast';
+import { FiLoader } from "react-icons/fi";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import useAxiosSecure from '../../useAxios/useAxiosSecure';
 
 
 const SignUp = () => {
+    const useAxios = useAxiosSecure()
+    const [loading, setLoading] = useState(false)
+
     const {
         register,
         formState: { errors },
         handleSubmit,
+        reset
     } = useForm()
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
+        setLoading(true)
+
+        try {
+            const image = data.photo[0]
+            const img = await uploadImage(image)
+            console.log(img);
+            const userCredentials = {
+                photo: img,
+                name: data.name,
+                email: data.email,
+                password: data.password
+            }
+            const res = await useAxios.post('/signUp', userCredentials)
+            console.log('SignUp status', res);
+            if (res?.status === 201) {
+                toast.success('SignUp successful')
+                reset()
+            }
+
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false)
+        }
+
         console.log(data);
     }
     console.log(errors);
@@ -67,9 +102,20 @@ const SignUp = () => {
                     <div>
                         <button
                             type='submit'
-                            className='px-4 py-2 rounded-md bg-gradient-to-br from-blue-500 to-red-500 w-full text-white font-bold cursor-pointer'>
-                            SignUp
+                            className='px-4 py-2 rounded-md bg-gradient-to-br from-blue-500 to-red-500 w-full text-white font-bold cursor-pointer flex items-center justify-center gap-3'>
+                            <span>
+                                <FiLoader className={`${loading ? 'animate-spin block' : 'hidden'} text-3xl`} />
+                            </span>
+                            {
+                                loading ? 'Signup processing...' : 'SignUp'
+                            }
                         </button>
+                        <p className='font-medium text-center mt-4'>Do you have an account?
+                            <Link to={'/signIn'}
+                                className='ml-2'>
+                                Signin
+                            </Link>
+                        </p>
                     </div>
                 </div>
             </form>

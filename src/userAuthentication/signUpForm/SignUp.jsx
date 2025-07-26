@@ -44,7 +44,7 @@ const SignUp = () => {
 
         } catch (error) {
             console.log(error);
-            if (error.status === 400) {
+            if (error?.status === 400) {
                 toast.error('user already exits')
                 reset()
 

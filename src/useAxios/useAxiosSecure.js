@@ -13,7 +13,7 @@ const useAxiosSecure = () => {
         instance.interceptors.response.use(response => {
             return response
         }, error => {
-            console.log('interceptor caught error', error.response.status);
+            console.log('interceptor caught error', error?.response?.status);
             if (error?.response?.status === 401) {
                 navigate('/signIn')
             }
